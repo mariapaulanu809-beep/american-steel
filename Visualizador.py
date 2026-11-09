@@ -60,7 +60,7 @@ def estilo_modelo(df):
     return df.style.apply(f, axis=None).format(fmts)
 
 
-def estilo_tabla (df, entra=None):
+def estilo_tabla(df, entra=None):
     """
     Resalta el pivote del tabla:
       - amarillo: columna de la variable que entró
@@ -202,7 +202,7 @@ def pestana_pasos(datos):
     h = hist[indices[pos]]
 
     st.markdown(f"### Fase {h['fase']} — " +
-                ("Tableau inicial" if h["it"] == 0 else f"Iteración {h['it']}"))
+                ("Tabla inicial" if h["it"] == 0 else f"Iteración {h['it']}"))
     if h["it"] == 0:
         st.info("Matriz inicial: la base está formada por las variables de holgura y artificiales. "
                 + ("Se minimiza la suma de artificiales." if h["fase"] == 1
@@ -211,7 +211,7 @@ def pestana_pasos(datos):
         st.info(f"Entra **{h['entra']}**, sale **{h['sale']}**, pivote = {asx.fmt(h['pivote'])}.")
     st.metric("Valor de Z en este paso" if h["fase"] == 2 else "Suma de artificiales (Fase 1)",
               f"{h['z']:,.2f}")
-    st.dataframe(estilo_tableau(h["df"], h["entra"]))
+    st.dataframe(estilo_tabla(h["df"], h["entra"]))
 
 
 def pestana_solucion(datos, x):
@@ -303,7 +303,7 @@ def main():
         pestana_verificacion(datos, x)
     with tabs[5]:
         st.subheader("Descargar resultados")
-        st.write("Excel con el modelo, todas las matrices (tabla ), la solución y los costos.")
+        st.write("Excel con el modelo, todas las matrices (tabla), la solución y los costos.")
         st.download_button("Descargar Excel", data=excel_en_memoria(datos, df_variables(x), grupos),
                            file_name="resultados_american_steel.xlsx",
                            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
