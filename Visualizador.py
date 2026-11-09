@@ -60,7 +60,7 @@ def estilo_modelo(df):
     return df.style.apply(f, axis=None).format(fmts)
 
 
-def estilo_tableau(df, entra=None):
+def estilo_tabla (df, entra=None):
     """
     Resalta el pivote del tabla:
       - amarillo: columna de la variable que entró
@@ -303,7 +303,7 @@ def main():
         pestana_verificacion(datos, x)
     with tabs[5]:
         st.subheader("Descargar resultados")
-        st.write("Excel con el modelo, todas las matrices (tableaus), la solución y los costos.")
+        st.write("Excel con el modelo, todas las matrices (tabla ), la solución y los costos.")
         st.download_button("Descargar Excel", data=excel_en_memoria(datos, df_variables(x), grupos),
                            file_name="resultados_american_steel.xlsx",
                            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
