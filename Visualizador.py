@@ -3,7 +3,7 @@
 AMERICAN STEEL COMPANY - Interfaz gráfica con Streamlit
 =======================================================
 Muestra, en el navegador, el procedimiento del método simplex:
-modelo, matrices (tableaus) iteración por iteración, solución y costos.
+modelo, matrices (tabla) iteración por iteración, solución y costos.
 
 Requiere tener en la MISMA carpeta el archivo Algoritmo.py
 
@@ -62,7 +62,7 @@ def estilo_modelo(df):
 
 def estilo_tableau(df, entra=None):
     """
-    Resalta el pivote del tableau:
+    Resalta el pivote del tabla:
       - amarillo: columna de la variable que entró
       - azul:     fila de la variable que entró (fila pivote)
       - naranja:  celda pivote
