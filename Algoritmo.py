@@ -4,15 +4,15 @@
 AMERICAN STEEL COMPANY - Programación lineal por el método SIMPLEX
 ===================================================================
 Replica lo que hace Solver de Excel con "Simplex LP", pero mostrando el
-procedimiento: matriz del modelo, tableaus (matrices) de cada iteración,
+procedimiento: matriz del modelo, tabla (matrices) de cada iteración,
 solución final y costos (compra, producción, distribución y total).
 
 Datos: Tablas 3.7, 3.8 y 3.9 del libro (Moncada) y el modelo matemático del
 estudio de caso (restricciones 1 a 28).
 
 Uso:
-    python american_steel_simplex.py                  # resumen + tableau inicial y final
-    python american_steel_simplex.py --tableaus todos # imprime TODAS las matrices
+    python american_steel_simplex.py                  # resumen + tabla inicial y final
+    python american_steel_simplex.py --tabla todos # imprime TODAS las matrices
     python american_steel_simplex.py --sin-excel      # no genera el archivo .xlsx
 
 Método: Simplex de DOS FASES (porque el modelo tiene restricciones "=" y ">=").
@@ -242,7 +242,7 @@ def forma_estandar(A, b, sentidos):
 
 
 # =============================================================================
-# 6. SIMPLEX DE DOS FASES CON TABLEAU
+# 6. SIMPLEX DE DOS FASES CON TABLA
 # =============================================================================
 class Simplex:
     def __init__(self, A, b, sentidos, c):
@@ -250,11 +250,11 @@ class Simplex:
         self.m, self.ncols = self.Aext.shape
         self.b = b.copy()
         self.c = c.copy()
-        self.historial = []          # lista de dicts con cada tableau
+        self.historial = []          # lista de dicts con cada tabla
         self.iter_global = 0
 
-    # ---- armado y vistas del tableau
-    def _tableau_inicial(self, costos):
+    # ---- armado y vistas del tabla
+    def _tabla_inicial(self, costos):
         m, n = self.Aext.shape
         T = np.zeros((m + 1, n + 1))
         T[:m, :n] = self.Aext
@@ -338,9 +338,9 @@ class Simplex:
         # ---------------- FASE 1
         c1 = np.zeros(n)
         c1[art] = 1.0
-        T = self._tableau_inicial(c1)
+        T = self._tabla_inicial(c1)
         base = list(self.base)
-        self._guardar(T, list(range(n)), base, nombres, 1, 0, "Tableau inicial (Fase 1)")
+        self._guardar(T, list(range(n)), base, nombres, 1, 0, "Tabla inicial (Fase 1)")
         if verbose:
             titulo("FASE 1: minimizar la suma de variables artificiales", "-")
         estado = self._iterar(T, list(range(n)), base, nombres, 1, verbose)
@@ -372,7 +372,7 @@ class Simplex:
         cb = c2[base]
         T2[-1, :n] = c2 - cb @ T2[:len(base), :n]
         T2[-1, -1] = -cb @ T2[:len(base), -1]
-        self._guardar(T2, no_art, base, nombres, 2, 0, "Tableau inicial (Fase 2)")
+        self._guardar(T2, no_art, base, nombres, 2, 0, "Tabla inicial (Fase 2)")
         if verbose:
             titulo("FASE 2: minimizar el costo total", "-")
         estado = self._iterar(T2, no_art, base, nombres, 2, verbose)
@@ -525,10 +525,10 @@ def exportar_excel(ruta, A, b, sentidos, sim, res, df_var, grupos):
         dfm.loc["Costo c ($/t)"] = list(COSTOS) + ["", ""]
         dfm.to_excel(w, sheet_name="Modelo (A,b,c)")
 
-        # Tableaus apilados
-        hoja = "Tableaus"
+        # Tabla apilados
+        hoja = "Tabla"
         fila = 0
-        pd.DataFrame({"Matrices (tableaus) del método simplex": [
+        pd.DataFrame({"Matrices (tabla) del método simplex": [
             "Fase 1: minimiza la suma de artificiales. Fase 2: minimiza el costo total.",
             "Última fila = cj - zj; en la columna Solución de esa fila aparece el valor de Z."]}
         ).to_excel(w, sheet_name=hoja, startrow=fila, index=False)
@@ -566,7 +566,7 @@ def exportar_excel(ruta, A, b, sentidos, sim, res, df_var, grupos):
 # =============================================================================
 def main():
     ap = argparse.ArgumentParser(description="American Steel Company - Simplex de dos fases")
-    ap.add_argument("--tableaus", choices=["basicos", "todos", "ninguno"], default="basicos",
+    ap.add_argument("--tabla", choices=["basicos", "todos", "ninguno"], default="basicos",
                     help="basicos: inicial y final de cada fase | todos: cada iteración")
     ap.add_argument("--sin-excel", action="store_true", help="no generar el archivo Excel")
     ap.add_argument("--salida", default="resultados_american_steel.xlsx")
@@ -584,17 +584,17 @@ def main():
         print(f"\nEl modelo no tiene solución óptima: {res['estado']}")
         sys.exit(1)
 
-    # Impresión de matrices (tableaus)
+    # Impresión de matrices (tabla)
     h = sim.historial
-    if args.tableaus != "ninguno":
-        if args.tableaus == "todos":
+    if args.tabla != "ninguno":
+        if args.tabla == "todos":
             mostrar = h
         else:
             f1 = [x for x in h if x["fase"] == 1]
             f2 = [x for x in h if x["fase"] == 2]
             mostrar = [f1[0], f1[-1], f2[0], f2[-1]]
         for t in mostrar:
-            titulo(f"MATRIZ (tableau) - Fase {t['fase']}, iteración {t['it']}: {t['info']}  | Z = {fmt(t['z'])}", "~")
+            titulo(f"MATRIZ (tabla) - Fase {t['fase']}, iteración {t['it']}: {t['info']}  | Z = {fmt(t['z'])}", "~")
             imprimir_df(t["df"].map(fmt), ancho_bloque=12)
 
     x = res["x"]
